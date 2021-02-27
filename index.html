@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>Weather App</title>
+  <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Roboto:300,400,700&amp;display=swap'>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
+  <link rel="stylesheet" href="./style.css">
+
+</head>
+<body>
+
+<section class="top-banner">
+  <div class="container">
+    <h1 class="heading">Simple Weather App</h1>
+    <form>
+      <input id="search" list="match-list" name="match-list" placeholder="Search for a city" autofocus>
+      <datalist id="match-list">
+      </datalist>
+      <button type="submit">SUBMIT</button>
+      <span class="msg"></span>
+    </form>
+  </div>
+</section>
+<section class="ajax-section">
+  <div class="container">
+    <ul class="cities"></ul>
+  </div>
+</section>
+
+<!-- partial -->
+  <script  src="./script.js"></script>
+  <script>
+    const search = document.getElementById('search');
+    const matchList = document.getElementById('match-list');
+
+    //search cities from city.list.json
+    const searhCities = async searchText => {
+      const res = await fetch('./data/city.list.json');
+      const cities = await res.json();
+      
+      //matching cities
+      let matches = cities.filter(city => {
+        const regex = new RegExp(`^${searchText}`, 'gi');
+        return city.name.match(regex);
+      });
+
+      if(searchText.length === 0){
+        matches = [];
+        matchList.innerHTML = [];
+      }
+      // console.log(matches);
+      outputHtml(matches);
+    };
+
+    //Showing the matches
+    const outputHtml = matches => {
+      if(matches.length > 0){        
+        const html = matches.map(match => `
+          <option value="${match.name}">${match.name}, ${match.country}           
+        `
+        ).slice(0,3);
+        
+        matchList.innerHTML = html;
+      }
+    };
+
+    search.addEventListener('input', () => searhCities(search.value));
+  </script>
+
+</body>
+</html>
