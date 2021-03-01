@@ -51,7 +51,7 @@
 
     //search cities from city.list.json
     const searhCities = async searchText => {
-      const res = await fetch('./data/city.list.json');
+      const res = await fetch('https://raw.githubusercontent.com/msfaisalkhan/city_json/main/city.list.json');
       const cities = await res.json();
       
       //matching cities

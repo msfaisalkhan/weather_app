@@ -16,9 +16,9 @@ form.addEventListener("submit", e => {
   if (listItemsArray.length > 0) {
     const filteredArray = listItemsArray.filter(el => {
       let content = "";
-      //athens,gr
+      //pune,in
       if (inputVal.includes(",")) {
-        //athens,grrrrrr->invalid country code, so we keep only the first part of inputVal
+        //pune,innnnnnn->invalid country code, so we keep only the first part of inputVal
         if (inputVal.split(",")[1].length > 2) {
           inputVal = inputVal.split(",")[0];
           content = el
@@ -28,7 +28,7 @@ form.addEventListener("submit", e => {
           content = el.querySelector(".city-name").dataset.name.toLowerCase();
         }
       } else {
-        //athens
+        //pune
         content = el.querySelector(".city-name span").textContent.toLowerCase();
       }
       return content == inputVal.toLowerCase();
@@ -44,15 +44,17 @@ form.addEventListener("submit", e => {
     }
   }
 
-  //ajax here
+  // fecthing starts here
   const url = `https://api.openweathermap.org/data/2.5/weather?q=${inputVal}&appid=${apiKey}&units=metric`;
 
-  fetch(url)
+   fetch(url)
     .then(response => response.json())
     .then(data => {
       const { main, name, sys, weather, coord, wind, clouds } = data;
       const lat = coord.lat;
       const lon = coord.lon;
+
+      // getting pollution data
       const purl = `https://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${apiKey}`;
       fetch(purl)
       .then(response => response.json())
@@ -61,7 +63,7 @@ form.addEventListener("submit", e => {
        window.pol = list[0]["main"]["aqi"];
        return pol;
       })
-      // console.log(pol);
+      // console.log(pol); aqi index and results
       var aqi;
       switch(pol){
         case 1:
@@ -80,11 +82,15 @@ form.addEventListener("submit", e => {
           aqi = "Very Poor";
           break;
       }
-      // console.log(aqi);
+
+      // Icons for good ui respect to weather from openweather
       const icon = `http://openweathermap.org/img/wn/${weather[0]["icon"]}@2x.png`;
 
+      //adding each city as li inside ul from good comparision
       const li = document.createElement("li");
       li.classList.add("city");
+      var count = 0;
+      count++;
       const markup = `
         <h2 class="city-name" data-name="${name},${sys.country}">
           <span>${name}</span>
@@ -92,12 +98,12 @@ form.addEventListener("submit", e => {
         </h2>
         <div class="row">
         <div class="col-8">
-        <span class="city-temp">${Math.round(main.temp)}<sup> &deg;C</sup></span>
+        <div class="city-temp" id="temp${count}">${Math.round(main.temp)}<span><sup> °C</sup><span></div>
         </div>
         <div class="col-4">
           <p class="condition">${weather[0]["description"]}</p>
-          <p class="high">${main.temp_max} &deg;C</p>
-          <p class="low">${main.temp_min} &deg;C</p>
+          <p class="high bold" id="up${count}">${main.temp_max} °C</p>
+          <p class="low bold" id="down${count}'">${main.temp_min} °C</p>
         </div>
         </div>
         <div class="text-center mx-auto">
@@ -107,29 +113,29 @@ form.addEventListener("submit", e => {
         </div>
         <div class="py-4 row">
           <div class="col text-center">
-            <p>${main.feels_like} &deg;C</p>
+            <p class="bold" id="feel${count}">${main.feels_like} °C</p>
             <span>Feels Like</span>
           </div>
           <div class="col text-center">
-            <p>${main.humidity}%</p>
+            <p class="bold">${main.humidity}%</p>
             <span>Humidity</span>
           </div>
           <div class="col text-center">
-            <p>${clouds.all}%</p>
+            <p class="bold">${clouds.all}%</p>
             <span>Clouds</span>            
           </div>
         </div>
         <div class="row">
           <div class="col text-center">
-            <p class>${wind.speed} m/s</p>
+            <p class="bold">${wind.speed} m/s</p>
             <span>Wind Speed</span>
           </div>
           <div class="col text-center">
-            <p>${main.pressure} hpa</p>
+            <p class="bold">${main.pressure} hpa</p>
             <span>Pressure</span>
           </div>
           <div class="col text-center">
-            <p>${aqi}</p>
+            <p class="bold">${aqi}</p>
             <span>Air Quality (Pollution)</span>
           </div>
         </div>
@@ -138,10 +144,43 @@ form.addEventListener("submit", e => {
       list.appendChild(li);
     })
     .catch(() => {
-      msg.textContent = "Please search again for valid city";
+      msg.textContent = "Please search again for valid city or enter the same city one more time";
     });
 
   msg.textContent = "";
   form.reset();
   input.focus();
 });
+
+//convert units
+// function myFunction1(givenid) {
+//   var text = document.getElementById(givenid).textContent;
+//   console.log(givenid);
+//   var arr   = text.split(" ");
+//   var first = arr.shift();
+//   var last  = arr.pop();
+//   console.log(first);
+//   if(last == "°C") {
+//     var fehrentit = convertcf(first);
+//     document.getElementById(givenid).innerHTML = `
+//     ${fehrentit} °F
+//     `;
+//   } else if(last == "°F") {
+//     var celcius = convertfc(first);
+//     console.log(celcius);
+//     document.getElementById(givenid).innerHTML = `
+//     ${celcius} °C
+//     `;
+//   }
+// }
+
+// function convertcf(c) {
+//   var f = Math.round((c * 1.8)+32);
+//   return f;
+// }
+
+// function convertfc(f) {
+//   var c = Math.round((f - 32)*0.5555);
+//   console.log(c);
+//   return c;
+// }
