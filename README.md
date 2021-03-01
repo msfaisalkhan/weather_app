@@ -16,4 +16,3 @@ API's Used:
 3. Cities List: Edited and Hosted on github(https://raw.githubusercontent.com/msfaisalkhan/city_json/main/city.list.json) to access the cities on locally.
 4. Openweathermap Image Icons for showing icon related to the city weather.
 
-If any queries please contact on msfaisalkhan1@gmail.com
