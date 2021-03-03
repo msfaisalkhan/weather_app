@@ -84,7 +84,7 @@ form.addEventListener("submit", e => {
       }
 
       // Icons for good ui respect to weather from openweather
-      const icon = `http://openweathermap.org/img/wn/${weather[0]["icon"]}@2x.png`;
+      const icon = `https://openweathermap.org/img/wn/${weather[0]["icon"]}@2x.png`;
 
       //adding each city as li inside ul from good comparision
       const li = document.createElement("li");
